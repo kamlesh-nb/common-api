@@ -1,3 +1,4 @@
+use std::fmt::format;
 use std::net::{Ipv4Addr, SocketAddr};
 use std::sync::Arc;
 
@@ -7,6 +8,7 @@ use axum::{
     Extension, Router, Json, Server
 };
 
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use tower_http::trace::TraceLayer;
 
 use mediator::DefaultAsyncMediator;
@@ -22,18 +24,20 @@ use crate::data::Repository;
 #[allow(unused)]
 pub struct WebHost {
     app: Router,
+    name: String,
 }
 
 #[derive(Clone)]
 #[allow(unused)]
 pub struct WebHostBuilder {
     app: Router,
+    name: String,
 }
 
 #[allow(unused)]
 impl WebHost {
-    pub fn new(app: Router) -> Self {
-        Self { app }
+    pub fn new(app: Router, name: String) -> Self {
+        Self { app, name }
     }
 
     pub fn add_cors(mut self, cors: CorsLayer) -> Self {
@@ -93,6 +97,15 @@ impl WebHost {
     }
 ///Start the server
     pub async fn start(mut self)  {
+
+        tracing_subscriber::registry()
+        .with(tracing_subscriber::EnvFilter::new(
+            std::env::var("RUST_LOG")
+                .unwrap_or_else(|_| format!("{}=debug,tower_http=debug", self.name).into()),
+        ))
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+
         self.app = self.app.layer(TraceLayer::new_for_http());
         let address = SocketAddr::from((Ipv4Addr::UNSPECIFIED, 8080));
         let server = Server::bind(&address)
@@ -106,13 +119,14 @@ impl WebHost {
 
 #[allow(unused)]
 impl WebHostBuilder {
-    pub fn new(app: Router) -> Self {
-        Self { app }
+    pub fn new(app: Router, name: String) -> Self {
+        Self { app, name }
     }
 
     pub fn build(self) -> WebHost {
         WebHost {
             app: self.app,
+            name: self.name
         }
     }
 }
