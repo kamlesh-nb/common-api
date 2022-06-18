@@ -1,6 +1,6 @@
 [package]
 name = "common"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -19,6 +19,5 @@ async-trait = "0.1.56"
 mediator = { version = "0.2.2", features=["async", "streams"]}
 utoipa = { version = "1.0.2", features = [ "chrono_with_format"] }
 utoipa-swagger-ui = "1.0.0" 
-appinsights = {version = "0.2.2", git = "https://github.com/kamlesh-nb/appinsights-rs"}
 azure_data_cosmos = "0.3.0"
 azure_core = "0.3.0"

@@ -47,8 +47,9 @@ impl WebHost {
         self
     }
 
-    pub fn add_logger<W>(mut self, logger: Arc<Mutex<W>>) -> Self 
-    where W: Writer + Send + Sync + 'static
+    pub fn add_logger<A>(mut self, logger: Arc<Mutex<A>>) -> Self 
+    where 
+    A: Send + Sync + 'static
     {
         self.app = self.app.layer(Extension(logger.clone()));
         self
