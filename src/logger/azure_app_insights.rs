@@ -2,7 +2,7 @@ use std::time::Duration;
 use appinsights::telemetry::SeverityLevel;
 use appinsights::{TelemetryClient, TelemetryConfig};
 
-use super::Logger;
+use super::Writer;
 
 pub struct AzureAppInsights {
     client: TelemetryClient,
@@ -21,7 +21,7 @@ impl AzureAppInsights {
     }
 }
 
-impl Logger for AzureAppInsights {
+impl Writer for AzureAppInsights {
     fn information(&self, message: String) {
         self.client.track_trace(message, SeverityLevel::Information);
     }

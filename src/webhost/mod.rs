@@ -16,7 +16,7 @@ use tokio::sync::Mutex;
 use tower_http::{compression::CompressionLayer, cors::CorsLayer};
 
 use crate::data::Repository;
-use crate::logger::Logger;
+use crate::logger::Writer;
  
 
 #[derive(Clone)]
@@ -47,8 +47,8 @@ impl WebHost {
         self
     }
 
-    pub fn add_logger<L>(mut self, logger: Arc<Mutex<L>>) -> Self 
-    where L: Logger + Send + Sync + 'static
+    pub fn add_logger<W>(mut self, logger: Arc<Mutex<W>>) -> Self 
+    where W: Writer + Send + Sync + 'static
     {
         self.app = self.app.layer(Extension(logger.clone()));
         self
