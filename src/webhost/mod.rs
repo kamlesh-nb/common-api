@@ -16,7 +16,6 @@ use tokio::sync::Mutex;
 use tower_http::{compression::CompressionLayer, cors::CorsLayer};
 
 use crate::data::Repository;
-use crate::logger::Writer;
  
 
 #[derive(Clone)]
