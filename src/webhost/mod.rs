@@ -7,6 +7,8 @@ use axum::{
     Extension, Router, Json, Server
 };
 
+use tower_http::trace::TraceLayer;
+
 use mediator::DefaultAsyncMediator;
 use serde::Serialize;
 use serde::de::DeserializeOwned;
@@ -14,6 +16,7 @@ use tokio::sync::Mutex;
 use tower_http::{compression::CompressionLayer, cors::CorsLayer};
 
 use crate::data::Repository;
+use crate::logger::Logger;
  
 
 #[derive(Clone)]
@@ -41,6 +44,13 @@ impl WebHost {
 
     pub fn add_compression(mut self) -> Self {
         self.app = self.app.layer(CompressionLayer::new());
+        self
+    }
+
+    pub fn add_logger<L>(mut self, logger: Arc<Mutex<L>>) -> Self 
+    where L: Logger + Send + Sync + 'static
+    {
+        self.app = self.app.layer(Extension(logger.clone()));
         self
     }
 
@@ -83,13 +93,13 @@ impl WebHost {
     }
 ///Start the server
     pub async fn start(mut self)  {
-       
+        self.app = self.app.layer(TraceLayer::new_for_http());
         let address = SocketAddr::from((Ipv4Addr::UNSPECIFIED, 8080));
         let server = Server::bind(&address)
             .serve(self.app.into_make_service());
 
         if let Err(e) = server.await {
-          eprintln!("server error: {}", e);
+          eprintln!("Server Error: {}", e);
         }
     }
 }
