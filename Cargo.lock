@@ -47,8 +47,7 @@ dependencies = [
 [[package]]
 name = "appinsights"
 version = "0.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "950f6c4b26a794a356139e416b90598eb11b218c89cb657b93b935b88871969b"
+source = "git+https://github.com/kamlesh-nb/appinsights-rs#700748a594a37cc5db97a836a157b1406f4ff314"
 dependencies = [
  "async-trait",
  "chrono",
@@ -341,7 +340,7 @@ dependencies = [
 
 [[package]]
 name = "common"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "appinsights",
  "async-trait",
