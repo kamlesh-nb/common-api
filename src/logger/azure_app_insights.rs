@@ -1,8 +1,8 @@
 use std::time::Duration;
-
-use super::Logger;
 use appinsights::telemetry::SeverityLevel;
 use appinsights::{TelemetryClient, TelemetryConfig};
+
+use super::Logger;
 
 pub struct AzureAppInsights {
     client: TelemetryClient,
